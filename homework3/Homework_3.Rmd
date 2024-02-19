@@ -34,6 +34,9 @@ prostate_test <- prostate %>%
 ## predict lpsa consider all other predictors
 ## lm fits using L2 loss
 fit <- lm(lpsa ~ ., data=prostate_train)
+summary(fit)
+coef(fit)
+residuals(fit)
 
 ## functions to compute testing/training error w/lm
 L2_loss <- function(y, yhat)
@@ -48,7 +51,7 @@ error(prostate_train, fit)
 error(prostate_test, fit)
 ```
 
-# Train a ridge regression model (see glmnet in R or sklearn.linear_model and its alpha argument in Python) and tune the value of lambda, i.e., for a sequence of lambda find the value of lambda that approximately minimizes the test error. And, Creating a figure that shows the training and test error associated with ridge regression as a function of lambda.
+# Train a ridge regression model (see glmnet in R or sklearn.linear_model and its alpha argument in Python) and tune the value of lambda, i.e., for a sequence of lambda find the value of lambda that approximately minimizes the test error (lambda = 0.2 minimizes the test error). And, Creating a figure that shows the training and test error associated with ridge regression as a function of lambda.
 ```{r}
 ## use glmnet to fit ridge
 ## glmnet fits using penalized L2 loss
@@ -73,11 +76,11 @@ error(prostate_train, fit, lam=0, form=form)
 ## testing error at lambda=0
 error(prostate_test, fit, lam=0, form=form)
 
-## train_error at lambda=0.03
-error(prostate_train, fit, lam=0.05, form=form)
+## train_error at lambda=0.2
+error(prostate_train, fit, lam=0.2, form=form)
 
-## testing error at lambda=0.03
-error(prostate_test, fit, lam=0.05, form=form)
+## testing error at lambda=0.2
+error(prostate_test, fit, lam=0.2, form=form)
 
 ## compute training and testing errors as function of lambda
 err_train_1 <- sapply(fit$lambda, function(lam) 

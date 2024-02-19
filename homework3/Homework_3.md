@@ -62,7 +62,78 @@ prostate_test <- prostate %>%
 ## predict lpsa consider all other predictors
 ## lm fits using L2 loss
 fit <- lm(lpsa ~ ., data=prostate_train)
+summary(fit)
+```
 
+    ## 
+    ## Call:
+    ## lm(formula = lpsa ~ ., data = prostate_train)
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -1.64870 -0.34147 -0.05424  0.44941  1.48675 
+    ## 
+    ## Coefficients:
+    ##              Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)  0.429170   1.553588   0.276  0.78334    
+    ## lcavol       0.576543   0.107438   5.366 1.47e-06 ***
+    ## lweight      0.614020   0.223216   2.751  0.00792 ** 
+    ## age         -0.019001   0.013612  -1.396  0.16806    
+    ## lbph         0.144848   0.070457   2.056  0.04431 *  
+    ## svi          0.737209   0.298555   2.469  0.01651 *  
+    ## lcp         -0.206324   0.110516  -1.867  0.06697 .  
+    ## gleason     -0.029503   0.201136  -0.147  0.88389    
+    ## pgg45        0.009465   0.005447   1.738  0.08755 .  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.7123 on 58 degrees of freedom
+    ## Multiple R-squared:  0.6944, Adjusted R-squared:  0.6522 
+    ## F-statistic: 16.47 on 8 and 58 DF,  p-value: 2.042e-12
+
+``` r
+coef(fit)
+```
+
+    ##  (Intercept)       lcavol      lweight          age         lbph          svi 
+    ##  0.429170133  0.576543185  0.614020004 -0.019001022  0.144848082  0.737208645 
+    ##          lcp      gleason        pgg45 
+    ## -0.206324227 -0.029502884  0.009465162
+
+``` r
+residuals(fit)
+```
+
+    ##             1             2             3             4             5 
+    ## -1.1843214831 -0.8629238799 -0.6115844941 -0.7193922821 -1.3285194027 
+    ##             6             8            11            12            13 
+    ##  0.0008460789 -1.3772752449 -0.1951878926  0.3093021281 -0.7514481545 
+    ##            14            16            17            18            19 
+    ## -0.4266131690 -0.4044823273  0.0707411519 -0.7879071619  0.3174831835 
+    ##            20            21            23            24            27 
+    ## -0.3028839782 -0.3384054362  0.6353601587 -0.8465604301 -0.3936410576 
+    ##            29            30            31            33            35 
+    ## -0.4015979194 -0.0496701613 -0.2177761605  0.0352948491  1.0592244227 
+    ##            37            38            39            40            41 
+    ##  0.5695926391  1.2359025317 -1.6487027458  0.5923365128  0.1445158115 
+    ##            43            45            46            47            51 
+    ##  0.2066060535  0.0712632096 -0.0699459329 -1.5275919017  0.0860012447 
+    ##            52            56            58            59            60 
+    ## -0.5022256852 -0.3445277222  0.4020117840  0.4968102377 -0.0799295442 
+    ##            61            63            67            68            69 
+    ##  0.3120736264 -0.0835518114 -0.2060108514 -0.1644419501  1.4867538012 
+    ##            70            71            72            75            76 
+    ## -0.0542373310 -0.1821294558  0.7814591518 -0.0606455149 -0.1117554254 
+    ##            77            78            79            81            82 
+    ## -0.1155433743 -0.1596029492  0.1541283629  1.4022395347  0.6579137611 
+    ##            83            85            86            87            88 
+    ##  0.0821686050  0.9641240691 -0.0647008999  0.5481931550  0.8423039905 
+    ##            89            90            91            92            93 
+    ## -0.1148808899  0.6300265742  0.5941586902 -0.0129417649  0.6110039917 
+    ##            94            96 
+    ##  0.2346000317  1.1691170422
+
+``` r
 ## functions to compute testing/training error w/lm
 L2_loss <- function(y, yhat)
   (y-yhat)^2
@@ -82,7 +153,7 @@ error(prostate_test, fit)
 
     ## [1] 0.521274
 
-# Train a ridge regression model (see glmnet in R or sklearn.linear_model and its alpha argument in Python) and tune the value of lambda, i.e., for a sequence of lambda find the value of lambda that approximately minimizes the test error. And, Creating a figure that shows the training and test error associated with ridge regression as a function of lambda.
+# Train a ridge regression model (see glmnet in R or sklearn.linear_model and its alpha argument in Python) and tune the value of lambda, i.e., for a sequence of lambda find the value of lambda that approximately minimizes the test error (lambda = 0.2 minimizes the test error). And, Creating a figure that shows the training and test error associated with ridge regression as a function of lambda.
 
 ``` r
 ## use glmnet to fit ridge
@@ -153,18 +224,18 @@ error(prostate_test, fit, lam=0, form=form)
     ## [1] 0.5211267
 
 ``` r
-## train_error at lambda=0.03
-error(prostate_train, fit, lam=0.05, form=form)
+## train_error at lambda=0.2
+error(prostate_train, fit, lam=0.2, form=form)
 ```
 
-    ## [1] 0.4424561
+    ## [1] 0.4651974
 
 ``` r
-## testing error at lambda=0.03
-error(prostate_test, fit, lam=0.05, form=form)
+## testing error at lambda=0.2
+error(prostate_test, fit, lam=0.2, form=form)
 ```
 
-    ## [1] 0.5017593
+    ## [1] 0.4873603
 
 ``` r
 ## compute training and testing errors as function of lambda
